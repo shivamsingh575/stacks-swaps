@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stacks &amp; Swaps — Used Books, Donations &amp; Exchanges</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2ECDD;
+  --paper-dark:#E7DEC8;
+  --ink:#2B2620;
+  --ink-soft:#5b5246;
+  --stamp-red:#8B3A2F;
+  --moss:#5C7A5C;
+  --kraft:#C9A876;
+  --denim:#3D5A73;
+  --card-bg:#FBF7EC;
+  --line:#cdbfa0;
+  --shadow: 0 2px 0 rgba(43,38,32,0.08), 0 8px 16px -8px rgba(43,38,32,0.25);
+  --radius: 3px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(139,58,47,0.03), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(92,122,92,0.04), transparent 40%);
+  color:var(--ink);
+  font-family:"Source Serif 4", serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{
+  font-family:"Special Elite", monospace;
+  letter-spacing:0.5px;
+  font-weight:400;
+}
+.mono{font-family:"JetBrains Mono", monospace;}
+a{color:var(--denim);}
+
+/* ===== Skip link / focus ===== */
+.skip-link{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);padding:8px 14px;z-index:200;}
+.skip-link:focus{left:8px;top:8px;}
+:focus-visible{outline:3px solid var(--denim); outline-offset:2px;}
+
+/* ===== Header / catalog drawer tabs ===== */
+header.top{
+  position:sticky; top:0; z-index:50;
+  background:var(--paper);
+  border-bottom:3px double var(--ink);
+}
+.top-inner{
+  max-width:1180px; margin:0 auto; padding:18px 24px 0;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand-mark{
+  width:46px; height:46px; border:2px solid var(--ink); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Special Elite", monospace; font-size:20px; transform:rotate(-6deg);
+  background:var(--card-bg);
+  flex-shrink:0;
+}
+.brand h1{font-size:1.5rem; margin:0; line-height:1;}
+.brand p{margin:2px 0 0; font-size:0.78rem; color:var(--ink-soft); font-family:"JetBrains Mono",monospace; letter-spacing:0.5px;}
+
+.account-area{display:flex; align-items:center; gap:10px; padding-bottom:10px;}
+.cart-btn, .icon-btn{
+  background:var(--card-bg); border:1.5px solid var(--ink); border-radius:var(--radius);
+  padding:7px 12px; cursor:pointer; font-family:"JetBrains Mono",monospace; font-size:0.82rem;
+  display:flex; align-items:center; gap:6px; color:var(--ink);
+}
+.cart-btn:hover, .icon-btn:hover{background:var(--ink); color:var(--paper);}
+.cart-count{background:var(--stamp-red); color:#fff; border-radius:50%; min-width:18px; height:18px; font-size:0.68rem; display:flex; align-items:center; justify-content:center; padding:0 4px;}
+.user-chip{
+  font-family:"JetBrains Mono",monospace; font-size:0.78rem; background:var(--kraft); color:var(--ink);
+  padding:6px 10px; border-radius:var(--radius); border:1.5px solid var(--ink); cursor:pointer;
+}
+
+nav.tabs{
+  max-width:1180px; margin:14px auto 0; padding:0 24px;
+  display:flex; gap:6px; flex-wrap:wrap;
+}
+.tab-btn{
+  font-family:"Special Elite", monospace; font-size:0.92rem;
+  background:var(--paper-dark); border:1.5px solid var(--ink); border-bottom:none;
+  border-radius:6px 6px 0 0; padding:10px 18px 8px; cursor:pointer; color:var(--ink-soft);
+  position:relative; top:1px;
+}
+.tab-btn[aria-selected="true"]{
+  background:var(--card-bg); color:var(--ink); top:0; box-shadow:0 -3px 0 var(--accent-color, var(--denim)) inset;
+}
+.tab-btn:hover{color:var(--ink);}
+.tab-browse{--accent-color:var(--denim);}
+.tab-sell{--accent-color:var(--stamp-red);}
+.tab-donate{--accent-color:var(--moss);}
+.tab-swap{--accent-color:#9b6b2f;}
+.tab-messages{--accent-color:var(--ink);}
+
+main{max-width:1180px; margin:0 auto; padding:28px 24px 80px;}
+.panel{display:none;}
+.panel.active{display:block; animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+/* ===== Section intros ===== */
+.section-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:18px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:12px;}
+.section-head h2{font-size:1.4rem; margin:0; display:flex; align-items:center; gap:10px;}
+.section-head .desc{font-size:0.88rem; color:var(--ink-soft); margin:4px 0 0; max-width:520px;}
+.badge-dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+
+/* ===== Toolbar ===== */
+.toolbar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; align-items:center;}
+input[type="text"], input[type="search"], select, textarea, input[type="number"], input[type="email"], input[type="password"]{
+  font-family:"Source Serif 4", serif; font-size:0.95rem;
+  border:1.5px solid var(--ink); border-radius:var(--radius); padding:9px 12px;
+  background:var(--card-bg); color:var(--ink);
+}
+.search-wrap{flex:1; min-width:200px; position:relative;}
+.search-wrap input{width:100%;}
+select{cursor:pointer; font-family:"JetBrains Mono",monospace; font-size:0.82rem;}
+.chips{display:flex; gap:8px; flex-wrap:wrap;}
+.chip{
+  font-family:"JetBrains Mono",monospace; font-size:0.76rem; padding:6px 12px; border-radius:20px;
+  border:1.5px solid var(--ink); background:var(--card-bg); cursor:pointer; color:var(--ink-soft);
+}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--paper);}
+
+/* ===== Grid & Cards ===== */
+.grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px;}
+.book-card{
+  background:var(--card-bg); border:1.5px solid var(--ink); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:0; position:relative; overflow:hidden;
+  display:flex; flex-direction:column; transition:transform .15s ease;
+}
+.book-card:hover{transform:translateY(-3px);}
+.cover{
+  height:150px; display:flex; align-items:center; justify-content:center;
+  font-family:"Special Elite",monospace; text-align:center; padding:10px; font-size:0.85rem;
+  border-bottom:1.5px solid var(--ink); color:#fff; position:relative;
+  overflow:hidden;
+}
+.cover img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  z-index:1;
+}
+.cover .cover-fallback-text{position:relative; z-index:0;}
+.cover.has-img .cover-fallback-text{display:none;}
+.cover-shade{
+  position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.45) 100%);
+  z-index:2; pointer-events:none;
+}
+.stamp{
+  position:absolute; top:8px; right:-28px; transform:rotate(38deg);
+  font-family:"JetBrains Mono",monospace; font-weight:700; font-size:0.62rem;
+  letter-spacing:1.5px; padding:3px 32px; border:2px solid currentColor; border-radius:3px;
+  text-transform:uppercase; z-index:3;
+}
+.stamp.sale{color:var(--stamp-red); background:rgba(139,58,47,0.08);}
+.stamp.donate{color:var(--moss); background:rgba(92,122,92,0.1);}
+.stamp.swap{color:#9b6b2f; background:rgba(155,107,47,0.1);}
+.stamp.pop{animation:stampPop .4s cubic-bezier(.2,1.4,.4,1);}
+@keyframes stampPop{0%{transform:rotate(38deg) scale(2.4); opacity:0;} 70%{opacity:1;} 100%{transform:rotate(38deg) scale(1);}}
+
+.book-body{padding:14px 14px 16px; display:flex; flex-direction:column; gap:6px; flex:1;}
+.book-title{font-family:"Special Elite",monospace; font-size:0.95rem; line-height:1.3; margin:0;}
+.book-author{font-size:0.82rem; color:var(--ink-soft); margin:0;}
+.book-meta{display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:8px; font-family:"JetBrains Mono",monospace; font-size:0.78rem; color:var(--ink-soft);}
+.price{font-size:1rem; font-weight:700; color:var(--ink); font-family:"JetBrains Mono",monospace;}
+.price.free{color:var(--moss);}
+.condition{font-family:"JetBrains Mono",monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.5px; padding:2px 7px; border:1px solid var(--line); border-radius:10px; color:var(--ink-soft);}
+
+.card-actions{display:flex; gap:8px; padding:0 14px 14px;}
+button.btn{
+  font-family:"Special Elite",monospace; font-size:0.82rem; cursor:pointer; border-radius:var(--radius);
+  padding:9px 14px; border:1.5px solid var(--ink); background:var(--ink); color:var(--paper); flex:1;
+  transition:transform .08s ease;
+}
+button.btn:active{transform:scale(0.97);}
+button.btn.secondary{background:var(--card-bg); color:var(--ink);}
+button.btn.moss{background:var(--moss); border-color:var(--moss); color:#fff;}
+button.btn.denim{background:var(--denim); border-color:var(--denim); color:#fff;}
+button.btn.stamp-red{background:var(--stamp-red); border-color:var(--stamp-red); color:#fff;}
+button.btn:disabled{opacity:0.5; cursor:not-allowed;}
+button.btn.full{width:100%;}
+
+.owner-row{display:flex; align-items:center; gap:6px; font-size:0.74rem; color:var(--ink-soft); padding:0 14px;}
+.avatar{
+  width:20px; height:20px; border-radius:50%; background:var(--kraft); display:flex; align-items:center; justify-content:center;
+  font-family:"JetBrains Mono",monospace; font-size:0.6rem; font-weight:700; color:var(--ink); flex-shrink:0;
+}
+
+/* ===== Sell/Donate/Swap forms ===== */
+.form-card{
+  background:var(--card-bg); border:1.5px solid var(--ink); border-radius:var(--radius);
+  padding:24px; max-width:560px; box-shadow:var(--shadow);
+}
+.form-row{display:flex; flex-direction:column; gap:6px; margin-bottom:16px;}
+.form-row label{font-family:"JetBrains Mono",monospace; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-soft);}
+.form-row.two-col{flex-direction:row; gap:14px;}
+.form-row.two-col > div{flex:1; display:flex; flex-direction:column; gap:6px;}
+textarea{resize:vertical; min-height:70px;}
+.radio-group{display:flex; gap:14px; flex-wrap:wrap;}
+.radio-opt{display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;}
+.helper-text{font-size:0.78rem; color:var(--ink-soft); margin-top:-2px;}
+.form-success{
+  display:none; background:rgba(92,122,92,0.12); border:1.5px solid var(--moss); border-radius:var(--radius);
+  padding:12px 14px; font-size:0.85rem; margin-top:14px; color:#39523a;
+}
+.form-success.show{display:block;}
+
+/* ===== Swap board ===== */
+.swap-note{
+  background:rgba(155,107,47,0.08); border:1px dashed #9b6b2f; border-radius:var(--radius);
+  padding:14px 16px; font-size:0.86rem; margin-bottom:22px; color:#6b4a1f;
+}
+
+/* ===== Messages ===== */
+.msg-layout{display:grid; grid-template-columns:260px 1fr; gap:0; border:1.5px solid var(--ink); border-radius:var(--radius); overflow:hidden; min-height:480px; background:var(--card-bg);}
+.thread-list{border-right:1.5px solid var(--ink); overflow-y:auto; max-height:560px;}
+.thread-item{
+  display:flex; gap:10px; align-items:flex-start; padding:13px 14px; cursor:pointer; border-bottom:1px solid var(--line);
+}
+.thread-item:hover{background:var(--paper-dark);}
+.thread-item.active{background:var(--kraft);}
+.thread-info{flex:1; min-width:0;}
+.thread-name{font-family:"Special Elite",monospace; font-size:0.84rem; margin:0;}
+.thread-preview{font-size:0.78rem; color:var(--ink-soft); margin:2px 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.thread-book{font-family:"JetBrains Mono",monospace; font-size:0.66rem; color:var(--denim); margin-top:2px;}
+.chat-area{display:flex; flex-direction:column; height:100%;}
+.chat-header{padding:14px 18px; border-bottom:1.5px solid var(--ink); display:flex; align-items:center; gap:10px;}
+.chat-header h3{margin:0; font-size:1rem;}
+.chat-context{font-size:0.76rem; color:var(--ink-soft); font-family:"JetBrains Mono",monospace;}
+.chat-messages{flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:10px; max-height:400px;}
+.bubble{max-width:70%; padding:9px 13px; border-radius:14px; font-size:0.88rem; line-height:1.4;}
+.bubble.them{background:var(--paper-dark); align-self:flex-start; border-bottom-left-radius:3px;}
+.bubble.me{background:var(--denim); color:#fff; align-self:flex-end; border-bottom-right-radius:3px;}
+.bubble-time{display:block; font-size:0.65rem; opacity:0.65; margin-top:3px; font-family:"JetBrains Mono",monospace;}
+.chat-input{display:flex; gap:8px; padding:14px; border-top:1.5px solid var(--ink);}
+.chat-input input{flex:1;}
+.empty-state{display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--ink-soft); padding:40px; text-align:center; gap:8px;}
+
+/* ===== Modals ===== */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(43,38,32,0.55); display:none; align-items:center; justify-content:center;
+  z-index:100; padding:20px;
+}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:var(--card-bg); border:2px solid var(--ink); border-radius:var(--radius); max-width:480px; width:100%;
+  max-height:88vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,0.3);
+}
+.modal-head{display:flex; justify-content:space-between; align-items:center; padding:18px 20px; border-bottom:1.5px solid var(--ink);}
+.modal-head h3{margin:0; font-size:1.1rem;}
+.modal-close{background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink-soft); line-height:1; padding:4px;}
+.modal-body{padding:20px;}
+.modal-body p{font-size:0.9rem; line-height:1.6;}
+
+/* Profile modal */
+.profile-head{display:flex; gap:14px; align-items:center; margin-bottom:16px;}
+.profile-avatar{width:56px; height:56px; border-radius:50%; background:var(--kraft); display:flex; align-items:center; justify-content:center; font-family:"Special Elite",monospace; font-size:1.2rem; border:2px solid var(--ink);}
+.stat-row{display:flex; gap:18px; margin:14px 0; font-family:"JetBrains Mono",monospace; font-size:0.8rem;}
+.stat-row div{text-align:center;}
+.stat-row b{display:block; font-size:1.1rem; font-family:"Special Elite",monospace;}
+
+/* Cart modal */
+.cart-item{display:flex; gap:10px; align-items:center; padding:10px 0; border-bottom:1px solid var(--line);}
+.cart-item .ci-cover{width:40px; height:54px; border-radius:2px; flex-shrink:0; position:relative; overflow:hidden;}
+.cart-item .ci-cover img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+.cart-item .ci-info{flex:1;}
+.cart-item .ci-info h4{margin:0; font-size:0.85rem; font-family:"Special Elite",monospace;}
+.cart-item .ci-info p{margin:2px 0 0; font-size:0.76rem; color:var(--ink-soft);}
+.cart-total{display:flex; justify-content:space-between; padding-top:14px; margin-top:10px; border-top:1.5px solid var(--ink); font-family:"JetBrains Mono",monospace; font-weight:700;}
+.remove-x{background:none; border:none; color:var(--stamp-red); cursor:pointer; font-size:1rem; padding:4px;}
+
+.toast-wrap{position:fixed; bottom:22px; right:22px; display:flex; flex-direction:column; gap:10px; z-index:150;}
+.toast{
+  background:var(--ink); color:var(--paper); padding:12px 18px; border-radius:var(--radius); font-size:0.85rem;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3); display:flex; align-items:center; gap:10px; animation:toastIn .25s ease;
+  max-width:300px;
+}
+@keyframes toastIn{from{opacity:0; transform:translateX(20px);} to{opacity:1; transform:translateX(0);}}
+
+footer{text-align:center; padding:28px 24px; color:var(--ink-soft); font-size:0.78rem; font-family:"JetBrains Mono",monospace; border-top:1px solid var(--line);}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important;}
+}
+@media (max-width:720px){
+  .msg-layout{grid-template-columns:1fr;}
+  .thread-list{display:none;}
+  .thread-list.mobile-show{display:block; max-height:none;}
+  .chat-area.mobile-hide{display:none;}
+  .form-row.two-col{flex-direction:column;}
+  .top-inner{flex-direction:column; align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">S&amp;S</div>
+      <div>
+        <h1>Stacks &amp; Swaps</h1>
+        <p>BUY · DONATE · EXCHANGE — CARD NO. 00198</p>
+      </div>
+    </div>
+    <div class="account-area">
+      <button class="user-chip" id="profileBtn" type="button">Reading as: <strong id="currentUserName">You</strong></button>
+      <button class="icon-btn" id="messagesShortcut" type="button" aria-label="Open messages">✉ Messages</button>
+      <button class="cart-btn" id="cartBtn" type="button" aria-haspopup="dialog">
+        🧺 Cart <span class="cart-count mono" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Site sections">
+    <button class="tab-btn tab-browse" role="tab" aria-selected="true" id="tabbtn-browse" data-tab="browse">📖 Browse</button>
+    <button class="tab-btn tab-sell" role="tab" aria-selected="false" id="tabbtn-sell" data-tab="sell">💰 Sell</button>
+    <button class="tab-btn tab-donate" role="tab" aria-selected="false" id="tabbtn-donate" data-tab="donate">🌱 Donate</button>
+    <button class="tab-btn tab-swap" role="tab" aria-selected="false" id="tabbtn-swap" data-tab="swap">🔄 Swap</button>
+    <button class="tab-btn tab-messages" role="tab" aria-selected="false" id="tabbtn-messages" data-tab="messages">✉ Messages</button>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- BROWSE / MARKETPLACE -->
+  <section class="panel active" id="panel-browse" role="tabpanel" aria-labelledby="tabbtn-browse">
+    <div class="section-head">
+      <div>
+        <h2><span class="badge-dot" style="background:var(--denim)"></span> Browse the catalog</h2>
+        <p class="desc">Every book on the shelves right now — for sale, free to a good home, or up for trade.</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="search" id="searchInput" placeholder="Search by title, author, or genre…" aria-label="Search books">
+      </div>
+      <select id="sortSelect" aria-label="Sort books">
+        <option value="recent">Newest first</option>
+        <option value="price-low">Price: low to high</option>
+        <option value="price-high">Price: high to low</option>
+        <option value="title">Title A–Z</option>
+      </select>
+    </div>
+    <div class="chips" id="filterChips" role="group" aria-label="Filter by listing type">
+      <button class="chip" data-filter="all" aria-pressed="true">All listings</button>
+      <button class="chip" data-filter="sale" aria-pressed="false">For sale</button>
+      <button class="chip" data-filter="donate" aria-pressed="false">Free / donated</button>
+      <button class="chip" data-filter="swap" aria-pressed="false">Swap only</button>
+    </div>
+    <div class="grid" id="browseGrid"></div>
+  </section>
+
+  <!-- SELL -->
+  <section class="panel" id="panel-sell" role="tabpanel" aria-labelledby="tabbtn-sell">
+    <div class="section-head">
+      <div>
+        <h2><span class="badge-dot" style="background:var(--stamp-red)"></span> List a book for sale</h2>
+        <p class="desc">Set your price and condition. Buyers can add it straight to their cart.</p>
+      </div>
+    </div>
+    <form class="form-card" id="sellForm">
+      <div class="form-row">
+        <label for="sellTitle">Title</label>
+        <input type="text" id="sellTitle" required placeholder="e.g. The Left Hand of Darkness">
+      </div>
+      <div class="form-row two-col">
+        <div>
+          <label for="sellAuthor">Author</label>
+          <input type="text" id="sellAuthor" required placeholder="Ursula K. Le Guin">
+        </div>
+        <div>
+          <label for="sellGenre">Genre</label>
+          <input type="text" id="sellGenre" placeholder="Science fiction">
+        </div>
+      </div>
+      <div class="form-row two-col">
+        <div>
+          <label for="sellPrice">Price (USD)</label>
+          <input type="number" id="sellPrice" min="0" step="0.01" required placeholder="8.50">
+        </div>
+        <div>
+          <label for="sellCondition">Condition</label>
+          <select id="sellCondition">
+            <option>Like new</option>
+            <option>Very good</option>
+            <option selected>Good</option>
+            <option>Acceptable — well loved</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="sellNotes">Notes for the buyer</label>
+        <textarea id="sellNotes" placeholder="Any markings, missing dust jacket, etc."></textarea>
+      </div>
+      <div class="form-row">
+        <label for="sellCoverUrl">Cover image URL (optional)</label>
+        <input type="text" id="sellCoverUrl" placeholder="Paste a link to a cover photo">
+        <p class="helper-text">Leave blank and we'll use a plain placeholder cover instead.</p>
+      </div>
+      <button type="submit" class="btn stamp-red full">Stamp &amp; list for sale</button>
+      <div class="form-success" id="sellSuccess">Listed. Your book now appears in Browse with a FOR SALE stamp.</div>
+    </form>
+  </section>
+
+  <!-- DONATE -->
+  <section class="panel" id="panel-donate" role="tabpanel" aria-labelledby="tabbtn-donate">
+    <div class="section-head">
+      <div>
+        <h2><span class="badge-dot" style="background:var(--moss)"></span> Give a book away</h2>
+        <p class="desc">No charge, no haggling — just pass it to the next reader. Claimed books are first-come, first-served.</p>
+      </div>
+    </div>
+    <form class="form-card" id="donateForm">
+      <div class="form-row">
+        <label for="donateTitle">Title</label>
+        <input type="text" id="donateTitle" required placeholder="e.g. Charlotte's Web">
+      </div>
+      <div class="form-row two-col">
+        <div>
+          <label for="donateAuthor">Author</label>
+          <input type="text" id="donateAuthor" required placeholder="E.B. White">
+        </div>
+        <div>
+          <label for="donateCondition">Condition</label>
+          <select id="donateCondition">
+            <option>Like new</option>
+            <option selected>Good</option>
+            <option>Worn but readable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="donateNotes">A note to whoever claims it (optional)</label>
+        <textarea id="donateNotes" placeholder="Why you loved it, who might enjoy it…"></textarea>
+        <p class="helper-text">This book will be marked FREE — anyone can claim it with one click.</p>
+      </div>
+      <div class="form-row">
+        <label for="donateCoverUrl">Cover image URL (optional)</label>
+        <input type="text" id="donateCoverUrl" placeholder="Paste a link to a cover photo">
+      </div>
+      <button type="submit" class="btn moss full">Donate this book</button>
+      <div class="form-success" id="donateSuccess">Thank you — it's on the shelf marked FREE for the next reader.</div>
+    </form>
+  </section>
+
+  <!-- SWAP -->
+  <section class="panel" id="panel-swap" role="tabpanel" aria-labelledby="tabbtn-swap">
+    <div class="section-head">
+      <div>
+        <h2><span class="badge-dot" style="background:#9b6b2f"></span> Swap board</h2>
+        <p class="desc">Offer a book and say what you'd take in return. Other readers can propose a trade.</p>
+      </div>
+    </div>
+    <div class="swap-note">⇄ Swaps aren't automatic — listing here opens a message thread when someone proposes a trade. You decide if it's a fair exchange.</div>
+    <form class="form-card" id="swapForm" style="margin-bottom:32px;">
+      <div class="form-row">
+        <label for="swapTitle">Book you're offering</label>
+        <input type="text" id="swapTitle" required placeholder="e.g. Dune">
+      </div>
+      <div class="form-row two-col">
+        <div>
+          <label for="swapAuthor">Author</label>
+          <input type="text" id="swapAuthor" required placeholder="Frank Herbert">
+        </div>
+        <div>
+          <label for="swapCondition">Condition</label>
+          <select id="swapCondition">
+            <option selected>Good</option>
+            <option>Like new</option>
+            <option>Worn but readable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="swapWant">What you're hoping to trade for</label>
+        <input type="text" id="swapWant" placeholder="e.g. anything by Octavia Butler, or open to offers">
+      </div>
+      <div class="form-row">
+        <label for="swapCoverUrl">Cover image URL (optional)</label>
+        <input type="text" id="swapCoverUrl" placeholder="Paste a link to a cover photo">
+      </div>
+      <button type="submit" class="btn full" style="background:#9b6b2f; border-color:#9b6b2f; color:#fff;">Post to swap board</button>
+      <div class="form-success" id="swapSuccess">Posted. You'll get a message when someone proposes a trade.</div>
+    </form>
+    <h3 style="font-size:1.05rem; margin-bottom:14px;">Open swap offers</h3>
+    <div class="grid" id="swapGrid"></div>
+  </section>
+
+  <!-- MESSAGES -->
+  <section class="panel" id="panel-messages" role="tabpanel" aria-labelledby="tabbtn-messages">
+    <div class="section-head">
+      <div>
+        <h2><span class="badge-dot" style="background:var(--ink)"></span> Messages</h2>
+        <p class="desc">Talk directly with buyers, donors, and swap partners.</p>
+      </div>
+    </div>
+    <div class="msg-layout">
+      <div class="thread-list" id="threadList"></div>
+      <div class="chat-area" id="chatArea">
+        <div class="empty-state">
+          <div style="font-size:2rem;">✉</div>
+          <p>Pick a conversation to read it, or message a seller from any listing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  STACKS &amp; SWAPS · A COMMUNITY CATALOG · DEMO DATA, NOTHING IS REALLY SHIPPED OR CHARGED
+</footer>
+
+<!-- Cart Modal -->
+<div class="modal-overlay" id="cartModalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
+    <div class="modal-head">
+      <h3 id="cartModalTitle">Your cart</h3>
+      <button class="modal-close" id="closeCart" aria-label="Close cart">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="cartItemsWrap"></div>
+      <div class="cart-total" id="cartTotalRow" style="display:none;">
+        <span>Total</span><span id="cartTotalAmount">$0.00</span>
+      </div>
+      <button class="btn denim full" id="checkoutBtn" style="margin-top:16px; display:none;">Check out</button>
+    </div>
+  </div>
+</div>
+
+<!-- Book Detail / Contact Modal -->
+<div class="modal-overlay" id="detailModalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+    <div class="modal-head">
+      <h3 id="detailModalTitle">Book</h3>
+      <button class="modal-close" id="closeDetail" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="detailModalBody"></div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="profileModalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <div class="modal-head">
+      <h3 id="profileModalTitle">Your profile</h3>
+      <button class="modal-close" id="closeProfile" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="profile-head">
+        <div class="profile-avatar" id="profileAvatarBig">Y</div>
+        <div>
+          <div class="form-row" style="margin-bottom:6px;">
+            <input type="text" id="profileNameInput" value="You" aria-label="Your display name">
+          </div>
+          <p class="helper-text" style="margin:0;">This name shows on everything you list.</p>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div><b id="statListed">0</b>listed</div>
+        <div><b id="statSold">0</b>sold</div>
+        <div><b id="statDonated">0</b>donated</div>
+        <div><b id="statSwapped">0</b>swapped</div>
+      </div>
+      <button class="btn denim full" id="saveProfileBtn">Save name</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- State ---------- */
+  const COVER_COLORS = ["#3D5A73","#8B3A2F","#5C7A5C","#9b6b2f","#6b4c8a","#2B2620"];
+  function coverColor(seed){ let h=0; for(const c of seed) h=(h*31+c.charCodeAt(0))%COVER_COLORS.length; return COVER_COLORS[Math.abs(h)%COVER_COLORS.length]; }
+  function initials(name){ return name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(); }
+  function escapeHtml(str){ const d=document.createElement("div"); d.textContent=str; return d.innerHTML; }
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+
+  function coverInnerHtml(book){
+    if(book.coverUrl){
+      return `<img src="${escapeHtml(book.coverUrl)}" alt="Cover of ${escapeHtml(book.title)}" loading="lazy"
+              onload="this.parentElement.classList.add('has-img')" onerror="this.remove();">
+              <div class="cover-shade"></div>
+              <span class="cover-fallback-text">${escapeHtml(book.title)}</span>`;
+    }
+    return `<span class="cover-fallback-text">${escapeHtml(book.title)}</span>`;
+  }
+
+  const state = {
+    currentUser: { id:"u-you", name:"You" },
+    books: [
+      { id:uid(), title:"The Left Hand of Darkness", author:"Ursula K. Le Guin", genre:"Science fiction", type:"sale", price:8.5, condition:"Very good", notes:"A few pencil notes in the margins.", owner:"Priya N.", ownerId:"u1", date:Date.now()-1000*60*60*24*2, coverUrl:"https://covers.openlibrary.org/b/isbn/0441478123-M.jpg" },
+      { id:uid(), title:"Charlotte's Web", author:"E.B. White", genre:"Children's", type:"donate", price:0, condition:"Good", notes:"My kid outgrew it. Hope it finds a new reader.", owner:"Marcus T.", ownerId:"u2", date:Date.now()-1000*60*60*24*5, coverUrl:"https://covers.openlibrary.org/b/isbn/0064400557-M.jpg" },
+      { id:uid(), title:"Dune", author:"Frank Herbert", genre:"Science fiction", type:"swap", price:0, condition:"Good", notes:"Looking to trade for anything by Octavia Butler.", owner:"Aiko S.", ownerId:"u3", date:Date.now()-1000*60*60*24*1, wantedFor:"Octavia Butler, or open to offers", coverUrl:"https://covers.openlibrary.org/b/isbn/0441013597-M.jpg" },
+      { id:uid(), title:"Pride and Prejudice", author:"Jane Austen", genre:"Classic", type:"sale", price:5, condition:"Like new", notes:"Penguin clothbound edition.", owner:"Helena R.", ownerId:"u4", date:Date.now()-1000*60*60*24*7, coverUrl:"https://covers.openlibrary.org/b/isbn/0141439513-M.jpg" },
+      { id:uid(), title:"The Hobbit", author:"J.R.R. Tolkien", genre:"Fantasy", type:"sale", price:7, condition:"Good", notes:"Cover slightly creased.", owner:"Diego M.", ownerId:"u5", date:Date.now()-1000*60*60*24*3, coverUrl:"https://covers.openlibrary.org/b/isbn/0547928227-M.jpg" },
+      { id:uid(), title:"Educated", author:"Tara Westover", genre:"Memoir", type:"donate", price:0, condition:"Like new", notes:"Read once, gentle on the spine.", owner:"Priya N.", ownerId:"u1", date:Date.now()-1000*60*60*24*4, coverUrl:"https://covers.openlibrary.org/b/isbn/0399590501-M.jpg" },
+      { id:uid(), title:"Kindred", author:"Octavia E. Butler", genre:"Science fiction", type:"swap", price:0, condition:"Very good", notes:"Want a copy of Dune or any Le Guin.", owner:"Wren O.", ownerId:"u6", date:Date.now()-1000*60*60*12, wantedFor:"Dune, or Le Guin novels", coverUrl:"https://covers.openlibrary.org/b/isbn/08070769X-M.jpg" },
+      { id:uid(), title:"Sapiens", author:"Yuval Noah Harari", genre:"Nonfiction", type:"sale", price:9.99, condition:"Acceptable — well loved", notes:"Highlighted throughout, still very readable.", owner:"Marcus T.", ownerId:"u2", date:Date.now()-1000*60*60*24*9, coverUrl:"https://covers.openlibrary.org/b/isbn/0062316097-M.jpg" },
+      { id:uid(), title:"The Hunger Games", author:"Suzanne Collins", genre:"YA / Dystopian", type:"donate", price:0, condition:"Good", notes:"Whole trilogy if you message me!", owner:"Diego M.", ownerId:"u5", date:Date.now()-1000*60*60*6, coverUrl:"https://covers.openlibrary.org/b/isbn/0439023483-M.jpg" }
+    ],
+    cart: [],
+    threads: [
+      { id:"t1", withName:"Priya N.", bookTitle:"The Left Hand of Darkness", messages:[
+        {from:"them", text:"Hi! Saw you're interested — it's still available.", time:"Mon 2:14pm"},
+        {from:"me", text:"Great, does it still have the dust jacket?", time:"Mon 2:20pm"},
+        {from:"them", text:"Yep, a little worn at the corners but intact.", time:"Mon 2:25pm"}
+      ]},
+      { id:"t2", withName:"Aiko S.", bookTitle:"Dune (swap)", messages:[
+        {from:"them", text:"Would you take a trade for your Kindred copy?", time:"Yesterday"}
+      ]},
+      { id:"t3", withName:"Wren O.", bookTitle:"Kindred (swap)", messages:[] }
+    ],
+    activeThreadId: null,
+    filter: "all",
+    sort: "recent",
+    searchTerm: ""
+  };
+
+  let stats = { listed:0, sold:0, donated:0, swapped:0 };
+
+  /* ---------- Toast ---------- */
+  function toast(msg){
+    const wrap = document.getElementById("toastWrap");
+    const el = document.createElement("div");
+    el.className = "toast";
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(()=>{ el.style.opacity="0"; el.style.transition="opacity .3s"; setTimeout(()=>el.remove(),300); }, 3200);
+  }
+
+  /* ---------- Tabs ---------- */
+  const tabButtons = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".panel");
+  tabButtons.forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      tabButtons.forEach(b=>b.setAttribute("aria-selected","false"));
+      btn.setAttribute("aria-selected","true");
+      panels.forEach(p=>p.classList.remove("active"));
+      document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+    });
+  });
+  document.getElementById("messagesShortcut").addEventListener("click", ()=>{
+    document.querySelector('[data-tab="messages"]').click();
+  });
+
+  /* ---------- Render Browse Grid ---------- */
+  function stampLabel(type){
+    if(type==="sale") return "For sale";
+    if(type==="donate") return "Free";
+    return "Swap";
+  }
+  function bookCardHtml(book, opts){
+    opts = opts || {};
+    const stampClass = book.type==="sale" ? "sale" : book.type==="donate" ? "donate" : "swap";
+    const priceHtml = book.type==="sale"
+      ? `<span class="price">$${book.price.toFixed(2)}</span>`
+      : book.type==="donate"
+        ? `<span class="price free">FREE</span>`
+        : `<span class="price" style="color:#9b6b2f;">TRADE</span>`;
+    let actionHtml = "";
+    if(book.type==="sale"){
+      actionHtml = `<button class="btn secondary" data-action="view" data-id="${book.id}">Details</button>
+                    <button class="btn stamp-red" data-action="add-cart" data-id="${book.id}">Add to cart</button>`;
+    } else if(book.type==="donate"){
+      actionHtml = `<button class="btn secondary" data-action="view" data-id="${book.id}">Details</button>
+                    <button class="btn moss" data-action="claim" data-id="${book.id}">Claim free</button>`;
+    } else {
+      actionHtml = `<button class="btn secondary" data-action="view" data-id="${book.id}">Details</button>
+                    <button class="btn" style="background:#9b6b2f;border-color:#9b6b2f;color:#fff;" data-action="propose-swap" data-id="${book.id}">Propose trade</button>`;
+    }
+    const coverInner = coverInnerHtml(book);
+    return `
+      <article class="book-card" data-id="${book.id}">
+        <div class="cover" style="background:${coverColor(book.title)};">
+          ${coverInner}
+          <span class="stamp ${stampClass}" data-stampfor="${book.id}">${stampLabel(book.type)}</span>
+        </div>
+        <div class="owner-row">
+          <span class="avatar">${initials(book.owner)}</span>
+          <span>${escapeHtml(book.owner)}</span>
+        </div>
+        <div class="book-body">
+          <h3 class="book-title">${escapeHtml(book.title)}</h3>
+          <p class="book-author">${escapeHtml(book.author)}</p>
+          <div class="book-meta">
+            ${priceHtml}
+            <span class="condition">${escapeHtml(book.condition)}</span>
+          </div>
+        </div>
+        <div class="card-actions">${actionHtml}</div>
+      </article>`;
+  }
+
+  function applyFilterSortSearch(list){
+    let out = list.slice();
+    if(state.filter !== "all") out = out.filter(b=>b.type===state.filter);
+    if(state.searchTerm){
+      const t = state.searchTerm.toLowerCase();
+      out = out.filter(b => b.title.toLowerCase().includes(t) || b.author.toLowerCase().includes(t) || (b.genre||"").toLowerCase().includes(t));
+    }
+    if(state.sort==="price-low") out.sort((a,b)=>a.price-b.price);
+    else if(state.sort==="price-high") out.sort((a,b)=>b.price-a.price);
+    else if(state.sort==="title") out.sort((a,b)=>a.title.localeCompare(b.title));
+    else out.sort((a,b)=>b.date-a.date);
+    return out;
+  }
+
+  function renderBrowse(){
+    const grid = document.getElementById("browseGrid");
+    const list = applyFilterSortSearch(state.books);
+    if(list.length===0){
+      grid.innerHTML = `<p style="grid-column:1/-1; color:var(--ink-soft); padding:30px 0; text-align:center;">No books match that search yet. Try a different title, author, or filter.</p>`;
+      return;
+    }
+    grid.innerHTML = list.map(b=>bookCardHtml(b)).join("");
+  }
+
+  function renderSwapBoard(){
+    const grid = document.getElementById("swapGrid");
+    const list = state.books.filter(b=>b.type==="swap").sort((a,b)=>b.date-a.date);
+    if(list.length===0){
+      grid.innerHTML = `<p style="color:var(--ink-soft);">No swap offers yet — be the first to post one above.</p>`;
+      return;
+    }
+    grid.innerHTML = list.map(b=>{
+      return `
+      <article class="book-card" data-id="${b.id}">
+        <div class="cover" style="background:${coverColor(b.title)};">
+          ${coverInnerHtml(b)}
+          <span class="stamp swap">Swap</span>
+        </div>
+        <div class="owner-row"><span class="avatar">${initials(b.owner)}</span><span>${escapeHtml(b.owner)}</span></div>
+        <div class="book-body">
+          <h3 class="book-title">${escapeHtml(b.title)}</h3>
+          <p class="book-author">${escapeHtml(b.author)}</p>
+          <p class="helper-text" style="margin:4px 0 0;">Wants: ${escapeHtml(b.wantedFor || "open to offers")}</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn secondary" data-action="view" data-id="${b.id}">Details</button>
+          <button class="btn" style="background:#9b6b2f;border-color:#9b6b2f;color:#fff;" data-action="propose-swap" data-id="${b.id}">Propose trade</button>
+        </div>
+      </article>`;
+    }).join("");
+  }
+
+  /* ---------- Search / filter / sort wiring ---------- */
+  document.getElementById("searchInput").addEventListener("input", e=>{
+    state.searchTerm = e.target.value;
+    renderBrowse();
+  });
+  document.getElementById("sortSelect").addEventListener("change", e=>{
+    state.sort = e.target.value;
+    renderBrowse();
+  });
+  document.querySelectorAll("#filterChips .chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      document.querySelectorAll("#filterChips .chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+      chip.setAttribute("aria-pressed","true");
+      state.filter = chip.dataset.filter;
+      renderBrowse();
+    });
+  });
+
+  /* ---------- Cart ---------- */
+  function updateCartCount(){
+    document.getElementById("cartCount").textContent = state.cart.length;
+  }
+  function addToCart(book){
+    if(state.cart.find(b=>b.id===book.id)){ toast(`"${book.title}" is already in your cart.`); return; }
+    state.cart.push(book);
+    updateCartCount();
+    toast(`Added "${book.title}" to your cart.`);
+  }
+  function renderCart(){
+    const wrap = document.getElementById("cartItemsWrap");
+    const totalRow = document.getElementById("cartTotalRow");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    if(state.cart.length===0){
+      wrap.innerHTML = `<p style="color:var(--ink-soft); font-size:0.88rem;">Your cart is empty. Find something good in Browse.</p>`;
+      totalRow.style.display="none";
+      checkoutBtn.style.display="none";
+      return;
+    }
+    wrap.innerHTML = state.cart.map(b=>`
+      <div class="cart-item" data-id="${b.id}">
+        <div class="ci-cover" style="background:${coverColor(b.title)};">
+          ${b.coverUrl ? `<img src="${escapeHtml(b.coverUrl)}" alt="" onerror="this.remove();">` : ""}
+        </div>
+        <div class="ci-info">
+          <h4>${escapeHtml(b.title)}</h4>
+          <p>${escapeHtml(b.author)} · $${b.price.toFixed(2)}</p>
+        </div>
+        <button class="remove-x" data-action="remove-cart" data-id="${b.id}" aria-label="Remove ${escapeHtml(b.title)} from cart">✕</button>
+      </div>`).join("");
+    const total = state.cart.reduce((s,b)=>s+b.price,0);
+    document.getElementById("cartTotalAmount").textContent = "$"+total.toFixed(2);
+    totalRow.style.display="flex";
+    checkoutBtn.style.display="block";
+  }
+  document.getElementById("cartBtn").addEventListener("click", ()=>{
+    renderCart();
+    document.getElementById("cartModalOverlay").classList.add("show");
+  });
+  document.getElementById("closeCart").addEventListener("click", ()=> document.getElementById("cartModalOverlay").classList.remove("show"));
+  document.getElementById("cartItemsWrap").addEventListener("click", e=>{
+    const btn = e.target.closest('[data-action="remove-cart"]');
+    if(!btn) return;
+    state.cart = state.cart.filter(b=>b.id!==btn.dataset.id);
+    updateCartCount();
+    renderCart();
+  });
+  document.getElementById("checkoutBtn").addEventListener("click", ()=>{
+    const count = state.cart.length;
+    stats.sold += count;
+    toast(`Checked out ${count} book${count===1?"":"s"}. Sellers will reach out to arrange handoff.`);
+    state.cart = [];
+    updateCartCount();
+    renderCart();
+    document.getElementById("cartModalOverlay").classList.remove("show");
+  });
+
+  /* ---------- Detail modal ---------- */
+  function openDetail(book){
+    document.getElementById("detailModalTitle").textContent = book.title;
+    const body = document.getElementById("detailModalBody");
+    const actionHtml = book.type==="sale"
+      ? `<button class="btn stamp-red full" data-action="add-cart" data-id="${book.id}">Add to cart — $${book.price.toFixed(2)}</button>`
+      : book.type==="donate"
+        ? `<button class="btn moss full" data-action="claim" data-id="${book.id}">Claim this free book</button>`
+        : `<button class="btn full" style="background:#9b6b2f;border-color:#9b6b2f;color:#fff;" data-action="propose-swap" data-id="${book.id}">Propose a trade</button>`;
+    body.innerHTML = `
+      <div style="display:flex; gap:14px; margin-bottom:14px;">
+        <div style="width:70px; height:96px; border-radius:3px; background:${coverColor(book.title)}; flex-shrink:0; border:1.5px solid var(--ink); overflow:hidden; position:relative;">
+          ${book.coverUrl ? `<img src="${escapeHtml(book.coverUrl)}" alt="Cover of ${escapeHtml(book.title)}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;" onerror="this.remove();">` : ""}
+        </div>
+        <div>
+          <p style="margin:0; font-family:'Special Elite',monospace; font-size:0.78rem; color:var(--ink-soft);">${escapeHtml(book.author)} · ${escapeHtml(book.genre||"")}</p>
+          <p style="margin:6px 0 0;"><span class="condition">${escapeHtml(book.condition)}</span></p>
+          <p style="margin:8px 0 0; font-size:0.82rem;">Listed by <strong>${escapeHtml(book.owner)}</strong></p>
+        </div>
+      </div>
+      <p>${escapeHtml(book.notes || "No additional notes from the lister.")}</p>
+      ${book.wantedFor ? `<p class="helper-text">Looking for: ${escapeHtml(book.wantedFor)}</p>` : ""}
+      ${actionHtml}
+      <button class="btn secondary full" style="margin-top:8px;" data-action="message-owner" data-id="${book.id}">Message ${escapeHtml(book.owner)}</button>
+    `;
+    document.getElementById("detailModalOverlay").classList.add("show");
+  }
+  document.getElementById("closeDetail").addEventListener("click", ()=> document.getElementById("detailModalOverlay").classList.remove("show"));
+
+  /* ---------- Stamp pop animation helper ---------- */
+  function popStamp(bookId){
+    const stamps = document.querySelectorAll(`[data-stampfor="${bookId}"]`);
+    stamps.forEach(s=>{ s.classList.remove("pop"); requestAnimationFrame(()=>s.classList.add("pop")); });
+  }
+
+  /* ---------- Global click delegation for actions ---------- */
+  function findBook(id){ return state.books.find(b=>b.id===id); }
+
+  document.addEventListener("click", e=>{
+    const t = e.target.closest("[data-action]");
+    if(!t) return;
+    const action = t.dataset.action;
+    const id = t.dataset.id;
+    const book = findBook(id);
+
+    if(action==="view" && book){ openDetail(book); }
+    else if(action==="add-cart" && book){ addToCart(book); document.getElementById("detailModalOverlay").classList.remove("show"); }
+    else if(action==="claim" && book){
+      stats.donated += 1;
+      toast(`You claimed "${book.title}". A message thread has opened with ${book.owner}.`);
+      popStamp(book.id);
+      ensureThreadWith(book.owner, book.title+" (claimed)");
+      document.getElementById("detailModalOverlay").classList.remove("show");
+    }
+    else if(action==="propose-swap" && book){
+      stats.swapped += 1;
+      toast(`Trade proposed for "${book.title}". Head to Messages to talk it through.`);
+      ensureThreadWith(book.owner, book.title+" (swap)");
+      document.getElementById("detailModalOverlay").classList.remove("show");
+    }
+    else if(action==="message-owner" && book){
+      ensureThreadWith(book.owner, book.title);
+      document.getElementById("detailModalOverlay").classList.remove("show");
+      document.querySelector('[data-tab="messages"]').click();
+    }
+  });
+
+  /* ---------- Forms: Sell / Donate / Swap ---------- */
+  function flashSuccess(elId){
+    const el = document.getElementById(elId);
+    el.classList.add("show");
+    setTimeout(()=>el.classList.remove("show"), 4000);
+  }
+
+  document.getElementById("sellForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const book = {
+      id: uid(),
+      title: document.getElementById("sellTitle").value.trim(),
+      author: document.getElementById("sellAuthor").value.trim(),
+      genre: document.getElementById("sellGenre").value.trim(),
+      type: "sale",
+      price: parseFloat(document.getElementById("sellPrice").value)||0,
+      condition: document.getElementById("sellCondition").value,
+      notes: document.getElementById("sellNotes").value.trim(),
+      owner: state.currentUser.name,
+      ownerId: state.currentUser.id,
+      date: Date.now(),
+      coverUrl: document.getElementById("sellCoverUrl").value.trim()
+    };
+    state.books.unshift(book);
+    stats.listed += 1;
+    e.target.reset();
+    flashSuccess("sellSuccess");
+    renderBrowse();
+    toast(`"${book.title}" listed for $${book.price.toFixed(2)}.`);
+  });
+
+  document.getElementById("donateForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const book = {
+      id: uid(),
+      title: document.getElementById("donateTitle").value.trim(),
+      author: document.getElementById("donateAuthor").value.trim(),
+      genre: "",
+      type: "donate",
+      price: 0,
+      condition: document.getElementById("donateCondition").value,
+      notes: document.getElementById("donateNotes").value.trim(),
+      owner: state.currentUser.name,
+      ownerId: state.currentUser.id,
+      date: Date.now(),
+      coverUrl: document.getElementById("donateCoverUrl").value.trim()
+    };
+    state.books.unshift(book);
+    stats.listed += 1;
+    e.target.reset();
+    flashSuccess("donateSuccess");
+    renderBrowse();
+    toast(`"${book.title}" is up for donation.`);
+  });
+
+  document.getElementById("swapForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const book = {
+      id: uid(),
+      title: document.getElementById("swapTitle").value.trim(),
+      author: document.getElementById("swapAuthor").value.trim(),
+      genre: "",
+      type: "swap",
+      price: 0,
+      condition: document.getElementById("swapCondition").value,
+      notes: "",
+      wantedFor: document.getElementById("swapWant").value.trim(),
+      owner: state.currentUser.name,
+      ownerId: state.currentUser.id,
+      date: Date.now(),
+      coverUrl: document.getElementById("swapCoverUrl").value.trim()
+    };
+    state.books.unshift(book);
+    stats.listed += 1;
+    e.target.reset();
+    flashSuccess("swapSuccess");
+    renderBrowse();
+    renderSwapBoard();
+    toast(`"${book.title}" posted to the swap board.`);
+  });
+
+  /* ---------- Messages ---------- */
+  function ensureThreadWith(name, bookLabel){
+    let thread = state.threads.find(t=>t.withName===name && t.bookTitle===bookLabel);
+    if(!thread){
+      thread = { id:uid(), withName:name, bookTitle:bookLabel, messages:[
+        {from:"them", text:`Hi! Thanks for your interest in "${bookLabel.replace(/ \((claimed|swap)\)$/,"")}".`, time:"Just now"}
+      ]};
+      state.threads.unshift(thread);
+    }
+    state.activeThreadId = thread.id;
+    renderThreads();
+    renderChat(thread);
+  }
+
+  function renderThreads(){
+    const list = document.getElementById("threadList");
+    if(state.threads.length===0){
+      list.innerHTML = `<div class="empty-state"><p>No conversations yet.</p></div>`;
+      return;
+    }
+    list.innerHTML = state.threads.map(t=>{
+      const last = t.messages[t.messages.length-1];
+      return `
+      <div class="thread-item ${t.id===state.activeThreadId?'active':''}" data-thread="${t.id}">
+        <span class="avatar">${initials(t.withName)}</span>
+        <div class="thread-info">
+          <p class="thread-name">${escapeHtml(t.withName)}</p>
+          <p class="thread-preview">${last ? escapeHtml(last.text) : "No messages yet — say hello."}</p>
+          <p class="thread-book">re: ${escapeHtml(t.bookTitle)}</p>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function renderChat(thread){
+    const area = document.getElementById("chatArea");
+    if(!thread){
+      area.innerHTML = `<div class="empty-state"><div style="font-size:2rem;">✉</div><p>Pick a conversation to read it, or message a seller from any listing.</p></div>`;
+      return;
+    }
+    area.innerHTML = `
+      <div class="chat-header">
+        <span class="avatar">${initials(thread.withName)}</span>
+        <div>
+          <h3>${escapeHtml(thread.withName)}</h3>
+          <span class="chat-context">re: ${escapeHtml(thread.bookTitle)}</span>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        ${thread.messages.map(m=>`
+          <div class="bubble ${m.from}">${escapeHtml(m.text)}<span class="bubble-time">${escapeHtml(m.time)}</span></div>
+        `).join("") || `<p class="helper-text" style="text-align:center; margin-top:30px;">No messages yet — say hello.</p>`}
+      </div>
+      <form class="chat-input" id="chatInputForm">
+        <input type="text" id="chatInputField" placeholder="Write a message…" aria-label="Message text" autocomplete="off">
+        <button type="submit" class="btn denim">Send</button>
+      </form>
+    `;
+    const msgsEl = document.getElementById("chatMessages");
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+    document.getElementById("chatInputForm").addEventListener("submit", e=>{
+      e.preventDefault();
+      const field = document.getElementById("chatInputField");
+      const text = field.value.trim();
+      if(!text) return;
+      thread.messages.push({from:"me", text, time:"Just now"});
+      field.value="";
+      renderChat(thread);
+      renderThreads();
+      // light simulated reply for demo realism
+      setTimeout(()=>{
+        thread.messages.push({from:"them", text:"Sounds good — let me know what works for you.", time:"Just now"});
+        if(state.activeThreadId===thread.id){ renderChat(thread); renderThreads(); }
+      }, 1100);
+    });
+  }
+
+  document.getElementById("threadList").addEventListener("click", e=>{
+    const item = e.target.closest("[data-thread]");
+    if(!item) return;
+    const thread = state.threads.find(t=>t.id===item.dataset.thread);
+    state.activeThreadId = thread.id;
+    renderThreads();
+    renderChat(thread);
+  });
+
+  /* ---------- Profile ---------- */
+  document.getElementById("profileBtn").addEventListener("click", ()=>{
+    document.getElementById("profileNameInput").value = state.currentUser.name;
+    document.getElementById("profileAvatarBig").textContent = initials(state.currentUser.name);
+    document.getElementById("statListed").textContent = stats.listed;
+    document.getElementById("statSold").textContent = stats.sold;
+    document.getElementById("statDonated").textContent = stats.donated;
+    document.getElementById("statSwapped").textContent = stats.swapped;
+    document.getElementById("profileModalOverlay").classList.add("show");
+  });
+  document.getElementById("closeProfile").addEventListener("click", ()=> document.getElementById("profileModalOverlay").classList.remove("show"));
+  document.getElementById("saveProfileBtn").addEventListener("click", ()=>{
+    const newName = document.getElementById("profileNameInput").value.trim() || "You";
+    state.currentUser.name = newName;
+    document.getElementById("currentUserName").textContent = newName;
+    document.getElementById("profileModalOverlay").classList.remove("show");
+    toast("Profile updated.");
+  });
+
+  /* ---------- Close modals on overlay click / escape ---------- */
+  document.querySelectorAll(".modal-overlay").forEach(ov=>{
+    ov.addEventListener("click", e=>{ if(e.target===ov) ov.classList.remove("show"); });
+  });
+  document.addEventListener("keydown", e=>{
+    if(e.key==="Escape") document.querySelectorAll(".modal-overlay.show").forEach(ov=>ov.classList.remove("show"));
+  });
+
+  /* ---------- Init ---------- */
+  renderBrowse();
+  renderSwapBoard();
+  renderThreads();
+  updateCartCount();
+})();
+</script>
+</body>
+</html>
